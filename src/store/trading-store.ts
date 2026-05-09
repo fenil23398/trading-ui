@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { realizedPnlUsdt } from "@/lib/position-risk";
 import type { SupportedPair } from "@/lib/trading";
 
 export type OpenOrder = {
@@ -30,7 +31,8 @@ type TradingState = {
   placeOrder: (
     order: Omit<OpenOrder, "id" | "createdAt">,
   ) => { ok: boolean; reason?: string };
-  closeOrder: (id: string) => void;
+  closeOrder: (id: string, exitPrice: number) => void;
+  closeAllOrders: (marksByPair: Partial<Record<SupportedPair, number>>) => void;
 };
 
 export const useTradingStore = create<TradingState>()(
@@ -83,14 +85,40 @@ export const useTradingStore = create<TradingState>()(
 
         return { ok: true };
       },
-      closeOrder: (id) => {
+      closeOrder: (id, exitPrice) => {
         const closingOrder = get().orders.find((o) => o.id === id);
         if (!closingOrder) return;
 
+        const exit =
+          exitPrice > 0 && Number.isFinite(exitPrice)
+            ? exitPrice
+            : closingOrder.entryPrice;
+        const pnl = realizedPnlUsdt(closingOrder, exit);
+        const credit = closingOrder.sizeUsdt + pnl;
+
         set((state) => ({
           orders: state.orders.filter((o) => o.id !== id),
-          virtualBalance: state.virtualBalance + closingOrder.sizeUsdt,
+          virtualBalance: Math.max(0, state.virtualBalance + credit),
         }));
+      },
+      closeAllOrders: (marksByPair) => {
+        set((state) => {
+          if (state.orders.length === 0) return state;
+          let credit = 0;
+          for (const o of state.orders) {
+            const mark = marksByPair[o.pair];
+            const exit =
+              mark !== undefined && mark > 0 && Number.isFinite(mark)
+                ? mark
+                : o.entryPrice;
+            const pnl = realizedPnlUsdt(o, exit);
+            credit += o.sizeUsdt + pnl;
+          }
+          return {
+            orders: [],
+            virtualBalance: Math.max(0, state.virtualBalance + credit),
+          };
+        });
       },
     }),
     {

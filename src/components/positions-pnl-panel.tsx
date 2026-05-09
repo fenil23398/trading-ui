@@ -5,6 +5,7 @@ import { formatCompact, formatPrice } from "@/lib/format";
 import {
   estimateLiquidationPrice,
   isLiquidationTriggered,
+  realizedPnlUsdt,
 } from "@/lib/position-risk";
 import { formatPairLabel, type SupportedPair } from "@/lib/trading";
 import { useTradingStore } from "@/store/trading-store";
@@ -46,6 +47,7 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
   );
   const orders = useTradingStore((state) => state.orders);
   const closeOrder = useTradingStore((state) => state.closeOrder);
+  const closeAllOrders = useTradingStore((state) => state.closeAllOrders);
 
   const pairsKey = useMemo(() => {
     const unique = new Set<SupportedPair>();
@@ -86,18 +88,14 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
   }, [pairsKey]);
 
   useEffect(() => {
-    const idsToClose: string[] = [];
     for (const order of orders) {
       const mark = marksByPair[order.pair];
       if (mark === undefined || mark <= 0) continue;
       const liq = orderLiquidation(order);
       if (liq <= 0) continue;
       if (isLiquidationTriggered(order.side, mark, liq)) {
-        idsToClose.push(order.id);
+        closeOrder(order.id, mark);
       }
-    }
-    for (const id of idsToClose) {
-      closeOrder(id);
     }
   }, [orders, marksByPair, closeOrder]);
 
@@ -107,8 +105,7 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
       const mark =
         liveMark !== undefined && liveMark > 0 ? liveMark : order.entryPrice;
       const quantity = order.entryPrice > 0 ? order.sizeUsdt / order.entryPrice : 0;
-      const direction = order.side === "buy" ? 1 : -1;
-      const pnl = (mark - order.entryPrice) * quantity * direction;
+      const pnl = realizedPnlUsdt(order, mark);
       const notional = order.sizeUsdt;
       const roe = notional > 0 ? (pnl / notional) * 100 : 0;
       const liquidation = orderLiquidation(order);
@@ -131,10 +128,18 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
 
   return (
     <aside className="rounded-lg border border-border bg-panel-elevated p-3">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs text-text-secondary">
           Open Positions <span className="text-text-primary/70">· {formatPairLabel(pair)}</span>
         </p>
+        <button
+          type="button"
+          onClick={() => closeAllOrders(marksByPair)}
+          disabled={rows.length === 0}
+          className="rounded border border-sell/50 px-2 py-1 text-[10px] font-medium text-sell transition hover:bg-sell/10 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Close all
+        </button>
       </div>
 
       <div className="overflow-hidden rounded border border-border bg-panel">
@@ -193,7 +198,7 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
                     <span className="text-right">
                       <button
                         type="button"
-                        onClick={() => closeOrder(row.id)}
+                        onClick={() => closeOrder(row.id, row.mark)}
                         className="rounded border border-sell/40 px-1.5 py-0.5 text-[10px] text-sell transition hover:bg-sell/10"
                       >
                         Close

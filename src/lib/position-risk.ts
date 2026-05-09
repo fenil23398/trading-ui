@@ -1,3 +1,20 @@
+/** Unrealized / realized PnL in USDT (same formula as positions table). */
+export function realizedPnlUsdt(
+  order: {
+    side: "buy" | "sell";
+    sizeUsdt: number;
+    entryPrice: number;
+  },
+  exitPrice: number,
+): number {
+  if (order.entryPrice <= 0 || exitPrice <= 0 || !Number.isFinite(exitPrice)) {
+    return 0;
+  }
+  const quantity = order.sizeUsdt / order.entryPrice;
+  const direction = order.side === "buy" ? 1 : -1;
+  return (exitPrice - order.entryPrice) * quantity * direction;
+}
+
 /** Same simplified margin model as order entry (demo). */
 export function estimateLiquidationPrice(params: {
   side: "buy" | "sell";

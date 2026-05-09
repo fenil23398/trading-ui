@@ -7,6 +7,7 @@ import { TradingChart } from "@/components/trading-chart";
 import { HeaderBalance } from "@/components/header-balance";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { WalletButton } from "@/components/wallet-button";
+import { TradingDocumentTitle } from "@/components/trading-document-title";
 import { normalizePair } from "@/lib/trading";
 
 type HomeProps = {
@@ -21,6 +22,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background px-3 py-2 text-text-primary lg:px-4">
+      <TradingDocumentTitle pair={selectedPair} />
       <div className="flex w-full flex-1 flex-col gap-2">
         <header className="flex items-center justify-between border-b border-border/60 px-1 py-2">
           <div className="flex items-center gap-3">
