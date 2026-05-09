@@ -1,13 +1,9 @@
-import { PairSelector } from "@/components/pair-selector";
 import { MarketPanelTabs } from "@/components/market-panel-tabs";
 import { OrderEntryPanel } from "@/components/order-entry-panel";
-import { MarketStats } from "@/components/market-stats";
 import { PositionsPnLPanel } from "@/components/positions-pnl-panel";
 import { TradingChart } from "@/components/trading-chart";
-import { HeaderBalance } from "@/components/header-balance";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { WalletButton } from "@/components/wallet-button";
 import { TradingDocumentTitle } from "@/components/trading-document-title";
+import { TradingHeader } from "@/components/trading-header";
 import { normalizePair } from "@/lib/trading";
 
 type HomeProps = {
@@ -21,39 +17,36 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedPair = normalizePair(pairValue);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background px-3 py-2 text-text-primary lg:px-4">
+    <div className="flex min-h-screen min-h-[100dvh] flex-col overflow-x-hidden bg-background px-2 py-2 text-text-primary sm:px-3 lg:px-4">
       <TradingDocumentTitle pair={selectedPair} />
-      <div className="flex w-full flex-1 flex-col gap-2">
-        <header className="flex items-center justify-between border-b border-border/60 px-1 py-2">
-          <div className="flex items-center gap-3">
-            <p className="text-sm font-semibold">Trading UI</p>
-            <PairSelector value={selectedPair} />
-            <MarketStats key={selectedPair} pair={selectedPair} />
-          </div>
-          <div className="flex items-center gap-2">
-            <HeaderBalance />
-            <ThemeToggle />
-            <WalletButton />
-          </div>
-        </header>
+      <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-2">
+        <TradingHeader selectedPair={selectedPair} />
 
-        <main className="grid flex-1 grid-cols-1 gap-2 lg:h-[calc(100vh-72px)] lg:grid-cols-[3fr_1fr]">
-          <section className="px-1 py-1">
-            <div className="flex h-full min-h-0 flex-col gap-2">
-              <div className="grid min-h-0 grid-cols-1 gap-2 lg:h-[70vh] lg:grid-cols-[2.2fr_0.8fr]">
-                <div className="flex h-full min-h-0 flex-col">
-                <div className="min-h-0 flex-1 rounded-lg border border-border bg-panel-elevated p-2">
+        {/*
+          Mobile: single column — chart+book, then place order, then positions (last).
+          Desktop: grid areas — left column chart (70vh row) + positions; right column order spans full height.
+        */}
+        <main className="trading-main-grid">
+          <section className="relative z-0 flex w-full min-w-0 flex-col overflow-hidden self-start px-0 py-0 [grid-area:chart] lg:min-h-0 lg:self-stretch lg:overflow-visible lg:px-1 lg:py-1">
+            <div className="grid min-h-[280px] grid-cols-1 gap-2 sm:min-h-[320px] lg:flex-1 lg:min-h-0 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,0.8fr)]">
+              <div className="flex min-h-[220px] min-w-0 flex-col sm:min-h-[260px] lg:min-h-0">
+                <div className="min-h-0 flex-1 rounded-lg border border-border bg-panel-elevated p-1.5 sm:p-2">
                   <TradingChart pair={selectedPair} />
                 </div>
               </div>
-              <MarketPanelTabs key={selectedPair} pair={selectedPair} />
-              </div>
-              <div className="mt-3">
-                <PositionsPnLPanel key={selectedPair} pair={selectedPair} />
+              <div className="min-h-[240px] min-w-0 lg:min-h-0">
+                <MarketPanelTabs key={selectedPair} pair={selectedPair} />
               </div>
             </div>
           </section>
-          <OrderEntryPanel pair={selectedPair} />
+
+          <div className="relative z-0 flex w-full min-w-0 shrink-0 flex-col bg-background lg:z-auto lg:h-full lg:min-h-0 lg:self-stretch lg:overflow-hidden lg:bg-transparent [grid-area:order]">
+            <OrderEntryPanel pair={selectedPair} />
+          </div>
+
+          <div className="mt-1 w-full min-w-0 shrink-0 sm:mt-0 lg:mt-0 lg:min-h-0 lg:px-1 lg:self-stretch [grid-area:positions]">
+            <PositionsPnLPanel key={selectedPair} pair={selectedPair} />
+          </div>
         </main>
       </div>
     </div>

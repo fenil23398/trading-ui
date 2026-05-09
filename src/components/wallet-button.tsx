@@ -16,9 +16,10 @@ export function WalletButton() {
         type="button"
         disabled
         title="Add NEXT_PUBLIC_REOWN_PROJECT_ID to enable Reown wallet modal"
-        className="rounded-md border border-border bg-panel-elevated px-3 py-1.5 text-xs font-medium text-text-primary transition disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex h-8 items-center rounded-md border border-border bg-panel-elevated px-2 text-xs font-medium text-text-primary transition disabled:cursor-not-allowed disabled:opacity-60 sm:px-3"
       >
-        Connect Wallet
+        <span className="sm:hidden">Connect</span>
+        <span className="hidden sm:inline">Connect Wallet</span>
       </button>
     );
   }
@@ -44,7 +45,7 @@ function ReownWalletButton() {
       <button
         type="button"
         onClick={() => disconnect()}
-        className="rounded-md border border-border bg-panel-elevated px-3 py-1.5 text-xs font-medium text-text-primary transition hover:bg-panel"
+        className="inline-flex h-8 max-w-[9rem] items-center truncate rounded-md border border-border bg-panel-elevated px-2 text-xs font-medium text-text-primary transition hover:bg-panel sm:max-w-none sm:px-3"
         title="Disconnect wallet"
       >
         {shortAddress(address)}
@@ -57,9 +58,10 @@ function ReownWalletButton() {
       type="button"
       onClick={() => open()}
       title="Connect wallet"
-      className="rounded-md border border-border bg-panel-elevated px-3 py-1.5 text-xs font-medium text-text-primary transition hover:bg-panel"
+      className="inline-flex h-8 items-center rounded-md border border-border bg-panel-elevated px-2 text-xs font-medium text-text-primary transition hover:bg-panel sm:px-3"
     >
-      Connect Wallet
+      <span className="sm:hidden">Connect</span>
+      <span className="hidden sm:inline">Connect Wallet</span>
     </button>
   );
 }

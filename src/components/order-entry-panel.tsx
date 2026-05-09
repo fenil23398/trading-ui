@@ -1,11 +1,14 @@
 "use client";
 
+import { useAppKit } from "@reown/appkit/react";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAccount } from "wagmi";
 import { formatCompact, formatPrice } from "@/lib/format";
 import { validateOrderForm } from "@/lib/order-validation";
 import { estimateLiquidationPrice } from "@/lib/position-risk";
 import { formatPairLabel, MAX_LEVERAGE_BY_PAIR, type SupportedPair } from "@/lib/trading";
+import { isReownConfigured } from "@/lib/wallet-config";
 import { PAPER_FUND_TOP_UP_USDT, useTradingStore } from "@/store/trading-store";
 
 type Side = "buy" | "sell";
@@ -202,15 +205,15 @@ export function OrderEntryPanel({ pair }: OrderEntryPanelProps) {
   }, [executionState]);
 
   return (
-    <section className="relative h-full overflow-hidden rounded-xl border border-border bg-panel p-4">
-      <div className="mb-4 flex items-center justify-between">
+    <section className="relative flex min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-panel p-3 sm:p-4 lg:h-full">
+      <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2 sm:mb-4">
         <h2 className="text-sm font-semibold">Place Order</h2>
         <span className="rounded-md bg-panel-elevated px-2 py-1 text-xs text-text-secondary">
           Max leverage {maxLeverage}x
         </span>
       </div>
 
-      <div className="grid h-[calc(100%-44px)] grid-cols-1 gap-3 overflow-y-auto pr-1">
+      <div className="grid max-h-[min(72vh,640px)] min-h-0 grid-cols-1 gap-3 overflow-y-auto overscroll-contain pr-1 lg:max-h-none lg:flex-1 lg:min-h-0">
         <div className="rounded-lg border border-border bg-panel-elevated p-3">
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -331,38 +334,30 @@ export function OrderEntryPanel({ pair }: OrderEntryPanelProps) {
             </div>
           ) : null}
           <div className="my-3 border-t border-border/70" />
-          <button
-            type="button"
-            onClick={() => {
-              if (needsAddFunds) {
+          {isReownConfigured ? (
+            <OrderPrimaryCta
+              side={side}
+              needsAddFunds={needsAddFunds}
+              executionState={executionState}
+              validationIsValid={validation.isValid}
+              onSimulateExecution={simulateExecution}
+              onAddFunds={() => {
                 addPaperFunds(PAPER_FUND_TOP_UP_USDT);
                 setExecutionState("filled");
                 setExecutionMessage("");
-                return;
-              }
-              simulateExecution();
-            }}
-            disabled={
-              executionState === "validating" ||
-              executionState === "matching" ||
-              (!needsAddFunds && !validation.isValid)
-            }
-            className={`mt-4 w-full rounded-md px-3 py-2 text-sm font-semibold text-white transition disabled:opacity-60 ${
-              needsAddFunds
-                ? "bg-brand hover:opacity-90"
-                : side === "buy"
-                  ? "bg-buy hover:opacity-90"
-                  : "bg-sell hover:opacity-90"
-            }`}
-          >
-            {executionState === "validating" || executionState === "matching"
-              ? "Processing..."
-              : needsAddFunds
-                ? `ADD FUNDS (+${PAPER_FUND_TOP_UP_USDT} USDT)`
-                : side === "buy"
-                  ? "Place Buy Order"
-                  : "Place Sell Order"}
-          </button>
+              }}
+            />
+          ) : (
+            <button
+              type="button"
+              disabled
+              title="Add NEXT_PUBLIC_REOWN_PROJECT_ID to enable Reown wallet modal"
+              className="mt-4 w-full rounded-md bg-panel-elevated px-3 py-2 text-sm font-semibold text-text-primary transition disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span className="sm:hidden">Connect</span>
+              <span className="hidden sm:inline">Connect Wallet</span>
+            </button>
+          )}
 
           <div className="mt-3 rounded-md border border-border bg-panel p-2">
             <div className="grid grid-cols-2 gap-2 text-[11px]">
@@ -431,5 +426,75 @@ export function OrderEntryPanel({ pair }: OrderEntryPanelProps) {
         ) : null}
       </AnimatePresence>
     </section>
+  );
+}
+
+type OrderPrimaryCtaProps = {
+  side: Side;
+  needsAddFunds: boolean;
+  executionState: ExecutionState;
+  validationIsValid: boolean;
+  onSimulateExecution: () => void;
+  onAddFunds: () => void;
+};
+
+function OrderPrimaryCta({
+  side,
+  needsAddFunds,
+  executionState,
+  validationIsValid,
+  onSimulateExecution,
+  onAddFunds,
+}: OrderPrimaryCtaProps) {
+  const { isConnected } = useAccount();
+  const { open } = useAppKit();
+
+  const isBusy = executionState === "validating" || executionState === "matching";
+
+  const disabled =
+    isBusy || (Boolean(isConnected) && !needsAddFunds && !validationIsValid);
+
+  const handleClick = () => {
+    if (!isConnected) {
+      open();
+      return;
+    }
+    if (needsAddFunds) {
+      onAddFunds();
+      return;
+    }
+    onSimulateExecution();
+  };
+
+  const colorClass =
+    !isConnected || needsAddFunds
+      ? "bg-brand hover:opacity-90"
+      : side === "buy"
+        ? "bg-buy hover:opacity-90"
+        : "bg-sell hover:opacity-90";
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={disabled}
+      title={!isConnected ? "Connect wallet" : undefined}
+      className={`mt-4 w-full rounded-md px-3 py-2 text-sm font-semibold text-white transition disabled:opacity-60 ${colorClass}`}
+    >
+      {isBusy ? (
+        "Processing..."
+      ) : !isConnected ? (
+        <>
+          <span className="sm:hidden">Connect</span>
+          <span className="hidden sm:inline">Connect Wallet</span>
+        </>
+      ) : needsAddFunds ? (
+        `ADD FUNDS (+${PAPER_FUND_TOP_UP_USDT} USDT)`
+      ) : side === "buy" ? (
+        "Place Buy Order"
+      ) : (
+        "Place Sell Order"
+      )}
+    </button>
   );
 }

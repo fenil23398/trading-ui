@@ -60,10 +60,13 @@ type MarketPanelTabsProps = {
   pair: SupportedPair;
 };
 
+/** Matches `@depth20` stream and REST `limit=20` — show full book on laptop/desktop. */
+const DEPTH_LEVELS = 20;
+
 function toOrderLevels(levels: string[][] = []): OrderLevel[] {
   let cumulative = 0;
 
-  return levels.slice(0, 10).map(([price, quantity]) => {
+  return levels.slice(0, DEPTH_LEVELS).map(([price, quantity]) => {
     const parsedPrice = Number(price);
     const parsedQty = Number(quantity);
     cumulative += parsedQty;
@@ -152,7 +155,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
   }, [asks, bids]);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-border bg-panel-elevated p-2.5">
+    <div className="flex min-h-[220px] w-full flex-col overflow-hidden rounded-lg border border-border bg-panel-elevated p-2 sm:min-h-0 sm:p-2.5 lg:h-full">
       <div className="mb-2 flex items-center gap-2">
         <button
           type="button"
@@ -178,7 +181,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
         </button>
       </div>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden pt-0.5">
+      <div className="relative isolate flex min-h-[200px] flex-1 flex-col overflow-hidden pt-0.5 sm:min-h-[160px] lg:min-h-0">
         <AnimatePresence mode="wait">
           {activeTab === "orderbook" ? (
             <motion.div
@@ -187,7 +190,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.16 }}
-              className="absolute inset-0 flex h-full flex-col"
+              className="flex min-h-0 w-full flex-1 flex-col"
             >
               <div className="h-full overflow-hidden rounded-md border border-border bg-panel">
             <div className="grid grid-cols-3 px-3 py-1.5 text-[11px] text-text-secondary">
@@ -196,10 +199,10 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
               <span className="text-right">Total</span>
             </div>
 
-            <div className="flex h-[calc(100%-27px)] flex-col px-1.5 py-1 text-[11px]">
-              <div className="flex-1 overflow-hidden">
+            <div className="flex h-[calc(100%-27px)] min-h-0 flex-col px-1.5 py-1 text-[11px]">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
                 {[...asks].reverse().map((level) => (
-                  <div key={`ask-${level.price}`} className="relative grid grid-cols-3 px-1 py-0.5">
+                  <div key={`ask-${level.price}`} className="relative grid grid-cols-3 px-1 py-0.5 lg:py-px">
                   <div
                     className="absolute right-0 top-0 h-full bg-sell/10"
                     style={{ width: `${(level.total / maxTotal) * 100}%` }}
@@ -213,14 +216,14 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
                 ))}
               </div>
 
-              <div className="py-1 text-center text-xs font-semibold text-text-primary">
+              <div className="shrink-0 py-1 text-center text-xs font-semibold text-text-primary">
                 Spread{" "}
                 {asks[0] && bids[0] ? formatPrice(asks[0].price - bids[0].price, pair) : "--"}
               </div>
 
-              <div className="flex-1 overflow-hidden">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
                 {bids.map((level) => (
-                  <div key={`bid-${level.price}`} className="relative grid grid-cols-3 px-1 py-0.5">
+                  <div key={`bid-${level.price}`} className="relative grid grid-cols-3 px-1 py-0.5 lg:py-px">
                   <div
                     className="absolute right-0 top-0 h-full bg-buy/10"
                     style={{ width: `${(level.total / maxTotal) * 100}%` }}
@@ -243,7 +246,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.16 }}
-              className="absolute inset-0 flex h-full flex-col"
+              className="flex min-h-0 w-full flex-1 flex-col"
             >
               <div className="h-full overflow-hidden rounded-md border border-border bg-panel">
             <div className="grid grid-cols-3 px-3 py-1.5 text-[11px] text-text-secondary">

@@ -19,7 +19,7 @@ export function HeaderBalance() {
 
   return (
     <div
-      className="flex h-8 max-w-[11rem] items-center gap-1.5 rounded-md border border-border bg-panel-elevated px-2.5"
+      className="flex h-8 max-w-[min(11rem,42vw)] items-center gap-1 rounded-md border border-border bg-panel-elevated px-2 sm:max-w-[11rem] sm:gap-1.5 sm:px-2.5"
       title="Simulated USDT (paper trading — not real funds)"
     >
       <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-brand">

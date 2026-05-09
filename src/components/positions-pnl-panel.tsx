@@ -143,7 +143,82 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
       </div>
 
       <div className="overflow-hidden rounded border border-border bg-panel">
-        <div className="overflow-x-auto">
+        <div className="lg:hidden">
+          {rows.length === 0 ? (
+            <div className="px-2 py-3 text-center text-xs text-text-secondary">
+              No open positions
+            </div>
+          ) : (
+            <div className="max-h-[min(50vh,360px)] space-y-2 overflow-y-auto overscroll-contain p-2">
+              {rows.map((row) => (
+                <div
+                  key={row.id}
+                  className="rounded-md border border-border/80 bg-panel-elevated/50 p-2.5 text-[11px]"
+                >
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <div>
+                      <span className={`font-semibold ${row.side === "buy" ? "text-buy" : "text-sell"}`}>
+                        {row.pair.replace("USDT", "/USDT")}
+                      </span>
+                      <span className="ml-2 text-[10px] text-text-secondary">{row.leverage}x</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => closeOrder(row.id, row.mark)}
+                      className="shrink-0 rounded border border-sell/40 px-2 py-0.5 text-[10px] text-sell transition hover:bg-sell/10"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[10px] sm:grid-cols-3">
+                    <div>
+                      <p className="text-text-secondary">Entry</p>
+                      <p className="font-medium tabular-nums">{formatPrice(row.entryPrice, row.pair)}</p>
+                    </div>
+                    <div>
+                      <p className="text-text-secondary">Mark</p>
+                      <p className="font-medium tabular-nums">{formatPrice(row.mark, row.pair)}</p>
+                    </div>
+                    <div>
+                      <p className="text-text-secondary">PnL</p>
+                      <p
+                        className={`font-semibold tabular-nums ${
+                          row.pnl >= 0 ? "text-buy" : "text-sell"
+                        }`}
+                      >
+                        {row.pnl >= 0 ? "+" : "-"}${formatCompact(Math.abs(row.pnl), 2)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-text-secondary">Qty</p>
+                      <p className="tabular-nums">{formatCompact(row.quantity, 3)}</p>
+                    </div>
+                    <div>
+                      <p className="text-text-secondary">Liq.</p>
+                      <p className="tabular-nums">
+                        {row.liquidation > 0 ? formatPrice(row.liquidation, row.pair) : "—"}
+                      </p>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <p className="text-text-secondary">SL / TP</p>
+                      <p className="truncate text-text-primary">
+                        {row.stopLoss != null && row.stopLoss > 0
+                          ? formatPrice(row.stopLoss, row.pair)
+                          : "—"}{" "}
+                        /{" "}
+                        {row.takeProfit != null && row.takeProfit > 0
+                          ? formatPrice(row.takeProfit, row.pair)
+                          : "—"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="hidden overflow-x-auto lg:block">
           <div className="min-w-[640px]">
             <div className="grid grid-cols-[0.85fr_0.95fr_0.95fr_0.65fr_0.95fr_0.85fr_0.85fr_0.9fr_0.65fr] border-b border-border px-2 py-1.5 text-[10px] text-text-secondary">
               <span>Pair</span>

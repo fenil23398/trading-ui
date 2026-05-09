@@ -90,14 +90,14 @@ export function PairSelector({ value }: PairSelectorProps) {
   }, [search]);
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative min-w-[8.5rem] max-w-[min(100%,14rem)] flex-1 sm:min-w-28 sm:max-w-none sm:flex-none">
       <button
         type="button"
         onClick={() => setOpen((previous) => !previous)}
-        className="flex h-8 min-w-28 items-center justify-between rounded-md border border-border bg-panel pl-3 pr-2 text-xs font-semibold text-text-primary outline-none transition hover:border-brand/60"
+        className="flex h-8 w-full min-w-0 items-center justify-between gap-1 rounded-md border border-border bg-panel pl-2 pr-1.5 text-xs font-semibold text-text-primary outline-none transition hover:border-brand/60 sm:min-w-28 sm:pl-3 sm:pr-2"
         aria-label="Select trading pair"
       >
-        <span>{formatPairLabel(value)}</span>
+        <span className="min-w-0 truncate text-left">{formatPairLabel(value)}</span>
         <svg
           width="12"
           height="12"
@@ -117,7 +117,7 @@ export function PairSelector({ value }: PairSelectorProps) {
       </button>
 
       {open ? (
-        <div className="absolute left-0 top-full z-30 mt-1 w-72 rounded-lg border border-border bg-panel p-2 shadow-xl">
+        <div className="absolute left-0 top-full z-30 mt-1 w-[min(18rem,calc(100vw-1rem))] max-w-[calc(100vw-1rem)] rounded-lg border border-border bg-panel p-2 shadow-xl">
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}

@@ -277,18 +277,18 @@ export function TradingChart({ pair }: TradingChartProps) {
   }, [interval, pair]);
 
   return (
-    <div className="relative h-full w-full rounded-lg">
-      <div className="absolute left-2 top-2 z-10 flex items-center gap-2">
-        <span className="pointer-events-none rounded-md bg-panel/90 px-2 py-1 text-[10px] font-semibold text-text-primary shadow">
+    <div className="relative h-full min-h-[200px] w-full min-w-0 rounded-lg">
+      <div className="absolute left-1.5 right-1.5 top-1.5 z-10 flex max-w-full flex-wrap items-center gap-1.5 sm:left-2 sm:right-auto sm:top-2 sm:max-w-[calc(100%-1rem)] sm:gap-2">
+        <span className="pointer-events-none shrink-0 rounded-md bg-panel/90 px-1.5 py-0.5 text-[9px] font-semibold text-text-primary shadow sm:px-2 sm:py-1 sm:text-[10px]">
           {pair.replace("USDT", "/USDT")}
         </span>
-        <div className="flex items-center gap-1 rounded-md bg-panel/90 p-1 shadow">
+        <div className="flex min-w-0 max-w-full flex-1 items-center gap-0.5 overflow-x-auto overflow-y-hidden rounded-md bg-panel/90 p-0.5 shadow [scrollbar-width:none] sm:flex-initial sm:max-w-none sm:gap-1 sm:p-1 [&::-webkit-scrollbar]:hidden">
           {INTERVALS.map((item) => (
             <button
               key={item}
               type="button"
               onClick={() => setInterval(item)}
-              className={`rounded px-1.5 py-0.5 text-[10px] transition ${
+              className={`shrink-0 rounded px-1 py-0.5 text-[9px] transition sm:px-1.5 sm:text-[10px] ${
                 interval === item
                   ? "bg-brand/20 text-brand"
                   : "text-text-secondary hover:bg-panel-elevated"
@@ -300,7 +300,7 @@ export function TradingChart({ pair }: TradingChartProps) {
         </div>
       </div>
 
-      <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-md bg-panel/80 p-1 shadow">
+      <div className="absolute bottom-2 left-1/2 z-10 flex max-w-[calc(100%-0.5rem)] -translate-x-1/2 items-center gap-0.5 rounded-md bg-panel/80 p-0.5 shadow sm:bottom-3 sm:gap-1 sm:p-1">
         <button
           type="button"
           onClick={() => updateBarSpacing(1)}

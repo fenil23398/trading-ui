@@ -79,8 +79,17 @@ export function MarketStats({ pair }: MarketStatsProps) {
   const decimals = useMemo(() => getPriceDecimals(pair), [pair]);
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="hidden items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 lg:flex">
+    <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
+      <div className="inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md border border-border bg-panel-elevated px-2 py-1 sm:gap-2 sm:px-2 sm:py-1.5 lg:hidden">
+        <span className="shrink-0 text-[9px] text-text-secondary sm:text-[10px]">Last</span>
+        <AnimatedNumber
+          value={stats.lastPrice}
+          decimals={decimals}
+          className="max-w-[6.5rem] truncate text-xs font-semibold tabular-nums sm:max-w-none"
+        />
+      </div>
+
+      <div className="hidden h-8 items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 lg:inline-flex">
         <span className="text-[10px] text-text-secondary">Last</span>
         <AnimatedNumber
           value={stats.lastPrice}
@@ -89,7 +98,7 @@ export function MarketStats({ pair }: MarketStatsProps) {
         />
       </div>
 
-      <div className="hidden items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 lg:flex">
+      <div className="hidden h-8 items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 lg:inline-flex">
         <span className="text-[10px] text-text-secondary">24h</span>
         <span
           className={`text-xs font-semibold ${
@@ -105,7 +114,7 @@ export function MarketStats({ pair }: MarketStatsProps) {
         </span>
       </div>
 
-      <div className="hidden items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 xl:flex">
+      <div className="hidden h-8 items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 xl:inline-flex">
         <span className="text-[10px] text-text-secondary">H/L</span>
         <span className="text-xs">
           <AnimatedNumber value={stats.high} decimals={decimals} /> /{" "}
@@ -113,14 +122,17 @@ export function MarketStats({ pair }: MarketStatsProps) {
         </span>
       </div>
 
-      <div className="hidden items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 2xl:flex">
+      <div className="hidden h-8 items-center gap-2 rounded-md border border-border bg-panel-elevated px-2 py-1.5 2xl:inline-flex">
         <span className="text-[10px] text-text-secondary">Vol</span>
         <AnimatedNumber value={stats.volume} decimals={0} className="text-xs" />
       </div>
 
-      <span className="inline-flex items-center gap-1 rounded-md border border-border bg-panel-elevated px-2 py-1 text-[10px] font-medium text-text-secondary">
+      <span
+        className="inline-flex h-8 items-center gap-1 rounded-md border border-border bg-panel-elevated px-2 py-1 text-[10px] font-medium text-text-secondary sm:gap-1.5 sm:px-2 sm:py-1.5"
+        title={status === "live" ? "Market data connected" : "Market data status"}
+      >
         <span
-          className={`h-1.5 w-1.5 rounded-full ${
+          className={`h-1.5 w-1.5 shrink-0 rounded-full ${
             status === "live"
               ? "bg-buy animate-pulse"
               : status === "connecting"
@@ -128,7 +140,7 @@ export function MarketStats({ pair }: MarketStatsProps) {
                 : "bg-sell"
           }`}
         />
-        {status}
+        <span className="hidden sm:inline">{status}</span>
       </span>
     </div>
   );
