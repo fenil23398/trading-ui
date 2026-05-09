@@ -53,31 +53,45 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+/* lg: trading shell fills viewport; vertical scroll lives in columns (e.g. left stack), not the document */
+@media (min-width: 1024px) {
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  }
+}
+
 /**
- * Main trading layout: mobile stacks chart → order → positions;
- * lg+ places order full-height right, positions under chart on the left.
+ * Mobile: flex column — left stack (chart + positions) → place order (see page.tsx).
+ * lg+: two columns — left (chart + order book + positions) | place order.
  */
 .trading-main-grid {
-  /* Flex column on small screens avoids grid placement/stacking bugs where Place Order could paint over chart/book */
   display: flex;
   flex-direction: column;
   min-height: 0;
   width: 100%;
-  flex: 1 1 auto;
   gap: 1rem;
 }
 
 @media (min-width: 1024px) {
   .trading-main-grid {
     display: grid;
-    height: calc(100dvh - 88px);
-    flex: 1 1 0;
     gap: 0.5rem;
-    align-content: stretch;
+    align-items: stretch;
     grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
-    grid-template-rows: minmax(0, 70vh) auto;
-    grid-template-areas:
-      "chart order"
-      "positions order";
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "left order";
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .trading-main-grid .trading-chart-slot > div.grid > div {
+    min-height: 0;
   }
 }

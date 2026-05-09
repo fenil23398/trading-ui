@@ -23,7 +23,7 @@ type TradingHeaderProps = {
 
 export function TradingHeader({ selectedPair }: TradingHeaderProps) {
   return (
-    <header className="border-b border-border/60 px-0 py-2">
+    <header className="shrink-0 border-b border-border/60 px-0 py-2">
       {/* Mobile: row 1 = brand + actions; row 2 = pair + market strip. Desktop: one aligned row (3 columns). */}
       <div className="flex flex-col gap-2 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-4 lg:py-0">
         <div className="flex items-center justify-between gap-3 lg:justify-start lg:gap-0">

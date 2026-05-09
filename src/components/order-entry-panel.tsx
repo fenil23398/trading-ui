@@ -205,7 +205,7 @@ export function OrderEntryPanel({ pair }: OrderEntryPanelProps) {
   }, [executionState]);
 
   return (
-    <section className="relative flex min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-panel p-3 sm:p-4 lg:h-full">
+    <section className="relative flex min-h-0 w-full max-w-full flex-col overflow-hidden rounded-xl border border-border bg-panel p-3 sm:p-4 lg:h-full lg:max-h-full lg:overflow-hidden">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2 sm:mb-4">
         <h2 className="text-sm font-semibold">Place Order</h2>
         <span className="rounded-md bg-panel-elevated px-2 py-1 text-xs text-text-secondary">
@@ -213,7 +213,7 @@ export function OrderEntryPanel({ pair }: OrderEntryPanelProps) {
         </span>
       </div>
 
-      <div className="grid max-h-[min(72vh,640px)] min-h-0 grid-cols-1 gap-3 overflow-y-auto overscroll-contain pr-1 lg:max-h-none lg:flex-1 lg:min-h-0">
+      <div className="grid max-h-[min(72vh,640px)] min-h-0 grid-cols-1 gap-3 overflow-y-auto overscroll-contain pr-1 lg:max-h-full lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         <div className="rounded-lg border border-border bg-panel-elevated p-3">
           <div className="grid grid-cols-2 gap-2">
             <button

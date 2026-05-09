@@ -126,9 +126,17 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
     [rows],
   );
 
+  const isEmpty = rows.length === 0;
+
   return (
-    <aside className="rounded-lg border border-border bg-panel-elevated p-3">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+    <aside
+      className={`flex w-full flex-col rounded-lg border border-border bg-panel-elevated ${
+        isEmpty
+          ? "min-h-0 shrink-0 overflow-hidden p-2"
+          : "max-h-[min(56vh,620px)] shrink-0 overflow-hidden p-3 lg:max-h-none lg:overflow-x-hidden lg:overflow-y-visible"
+      }`}
+    >
+      <div className={`flex shrink-0 flex-wrap items-center justify-between gap-2 ${isEmpty ? "mb-2" : "mb-3"}`}>
         <p className="text-xs text-text-secondary">
           Open Positions <span className="text-text-primary/70">· {formatPairLabel(pair)}</span>
         </p>
@@ -142,14 +150,16 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
         </button>
       </div>
 
-      <div className="overflow-hidden rounded border border-border bg-panel">
-        <div className="lg:hidden">
-          {rows.length === 0 ? (
-            <div className="px-2 py-3 text-center text-xs text-text-secondary">
-              No open positions
-            </div>
+      <div
+        className={`flex flex-col rounded border border-border bg-panel ${
+          isEmpty ? "shrink-0 overflow-hidden" : "min-h-0 flex-1 overflow-hidden lg:flex-none lg:shrink-0 lg:overflow-visible"
+        }`}
+      >
+        <div className={`flex flex-col overflow-hidden lg:hidden ${isEmpty ? "shrink-0" : "min-h-0 flex-1"}`}>
+          {isEmpty ? (
+            <div className="px-2 py-1.5 text-center text-xs text-text-secondary">No open positions</div>
           ) : (
-            <div className="max-h-[min(50vh,360px)] space-y-2 overflow-y-auto overscroll-contain p-2">
+            <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-2 [scrollbar-width:thin]">
               {rows.map((row) => (
                 <div
                   key={row.id}
@@ -218,76 +228,76 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
           )}
         </div>
 
-        <div className="hidden overflow-x-auto lg:block">
-          <div className="min-w-[640px]">
-            <div className="grid grid-cols-[0.85fr_0.95fr_0.95fr_0.65fr_0.95fr_0.85fr_0.85fr_0.9fr_0.65fr] border-b border-border px-2 py-1.5 text-[10px] text-text-secondary">
-              <span>Pair</span>
-              <span className="text-right">Entry</span>
-              <span className="text-right">Mark</span>
-              <span className="text-right">Qty</span>
-              <span className="text-right">Liq.</span>
-              <span className="text-right">SL</span>
-              <span className="text-right">TP</span>
-              <span className="text-right">PnL</span>
-              <span className="text-right">Action</span>
-            </div>
-
-            <div className="max-h-36 overflow-y-auto">
-              {rows.length === 0 ? (
-                <div className="px-2 py-3 text-center text-xs text-text-secondary">
-                  No open positions
+        <div className="hidden shrink-0 flex-col overflow-visible lg:flex">
+          {isEmpty ? (
+            <div className="px-2 py-1.5 text-center text-xs text-text-secondary">No open positions</div>
+          ) : (
+            <div className="flex min-w-[640px] shrink-0 flex-col overflow-x-auto overflow-y-visible">
+              <div className="flex min-w-[640px] shrink-0 flex-col">
+                <div className="grid shrink-0 grid-cols-[0.85fr_0.95fr_0.95fr_0.65fr_0.95fr_0.85fr_0.85fr_0.9fr_0.65fr] border-b border-border px-2 py-1.5 text-[10px] text-text-secondary">
+                  <span>Pair</span>
+                  <span className="text-right">Entry</span>
+                  <span className="text-right">Mark</span>
+                  <span className="text-right">Qty</span>
+                  <span className="text-right">Liq.</span>
+                  <span className="text-right">SL</span>
+                  <span className="text-right">TP</span>
+                  <span className="text-right">PnL</span>
+                  <span className="text-right">Action</span>
                 </div>
-              ) : (
-                rows.map((row) => (
-                  <div
-                    key={row.id}
-                    className="grid grid-cols-[0.85fr_0.95fr_0.95fr_0.65fr_0.95fr_0.85fr_0.85fr_0.9fr_0.65fr] items-center border-b border-border/60 px-2 py-1.5 text-[11px]"
-                  >
-                    <span className={row.side === "buy" ? "text-buy" : "text-sell"}>
-                      {row.pair.replace("USDT", "/USDT")}
-                    </span>
-                    <span className="text-right">{formatPrice(row.entryPrice, row.pair)}</span>
-                    <span className="text-right">{formatPrice(row.mark, row.pair)}</span>
-                    <span className="text-right">{formatCompact(row.quantity, 3)}</span>
-                    <span className="text-right">
-                      {row.liquidation > 0 ? formatPrice(row.liquidation, row.pair) : "--"}
-                    </span>
-                    <span className="text-right text-text-secondary">
-                      {row.stopLoss != null && row.stopLoss > 0
-                        ? formatPrice(row.stopLoss, row.pair)
-                        : "--"}
-                    </span>
-                    <span className="text-right text-text-secondary">
-                      {row.takeProfit != null && row.takeProfit > 0
-                        ? formatPrice(row.takeProfit, row.pair)
-                        : "--"}
-                    </span>
-                    <span
-                      className={`text-right font-medium ${
-                        row.pnl >= 0 ? "text-buy" : "text-sell"
-                      }`}
-                      title={`ROE ${row.roe.toFixed(2)}% | ${row.leverage}x`}
+
+                <div className="min-h-0 shrink-0 [scrollbar-width:thin]">
+                  {rows.map((row) => (
+                    <div
+                      key={row.id}
+                      className="grid grid-cols-[0.85fr_0.95fr_0.95fr_0.65fr_0.95fr_0.85fr_0.85fr_0.9fr_0.65fr] items-center border-b border-border/60 px-2 py-1.5 text-[11px]"
                     >
-                      {row.pnl >= 0 ? "+" : "-"}${formatCompact(Math.abs(row.pnl), 2)}
-                    </span>
-                    <span className="text-right">
-                      <button
-                        type="button"
-                        onClick={() => closeOrder(row.id, row.mark)}
-                        className="rounded border border-sell/40 px-1.5 py-0.5 text-[10px] text-sell transition hover:bg-sell/10"
+                      <span className={row.side === "buy" ? "text-buy" : "text-sell"}>
+                        {row.pair.replace("USDT", "/USDT")}
+                      </span>
+                      <span className="text-right">{formatPrice(row.entryPrice, row.pair)}</span>
+                      <span className="text-right">{formatPrice(row.mark, row.pair)}</span>
+                      <span className="text-right">{formatCompact(row.quantity, 3)}</span>
+                      <span className="text-right">
+                        {row.liquidation > 0 ? formatPrice(row.liquidation, row.pair) : "--"}
+                      </span>
+                      <span className="text-right text-text-secondary">
+                        {row.stopLoss != null && row.stopLoss > 0
+                          ? formatPrice(row.stopLoss, row.pair)
+                          : "--"}
+                      </span>
+                      <span className="text-right text-text-secondary">
+                        {row.takeProfit != null && row.takeProfit > 0
+                          ? formatPrice(row.takeProfit, row.pair)
+                          : "--"}
+                      </span>
+                      <span
+                        className={`text-right font-medium ${
+                          row.pnl >= 0 ? "text-buy" : "text-sell"
+                        }`}
+                        title={`ROE ${row.roe.toFixed(2)}% | ${row.leverage}x`}
                       >
-                        Close
-                      </button>
-                    </span>
-                  </div>
-                ))
-              )}
+                        {row.pnl >= 0 ? "+" : "-"}${formatCompact(Math.abs(row.pnl), 2)}
+                      </span>
+                      <span className="text-right">
+                        <button
+                          type="button"
+                          onClick={() => closeOrder(row.id, row.mark)}
+                          className="rounded border border-sell/40 px-1.5 py-0.5 text-[10px] text-sell transition hover:bg-sell/10"
+                        >
+                          Close
+                        </button>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      <div className="mt-2 flex items-center justify-between text-[11px]">
+      <div className={`flex shrink-0 items-center justify-between text-[11px] ${isEmpty ? "mt-1.5" : "mt-2"}`}>
         <span className="text-text-secondary">Total Unrealized PnL</span>
         <span className={`font-semibold ${totalPnl >= 0 ? "text-buy" : "text-sell"}`}>
           {totalPnl >= 0 ? "+" : "-"}${formatCompact(Math.abs(totalPnl), 2)}
