@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
+import { cookieToInitialState } from "wagmi";
 import { AppProviders } from "@/components/app-providers";
+import { walletConfig } from "@/lib/wallet-config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,11 +30,15 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const cookie = headersList.get("cookie") ?? "";
+  const initialState = cookieToInitialState(walletConfig, cookie);
+
   return (
     <html
       lang="en"
@@ -56,7 +63,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col overflow-x-hidden">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders initialState={initialState}>{children}</AppProviders>
       </body>
     </html>
   );

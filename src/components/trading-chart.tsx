@@ -48,6 +48,8 @@ type BinanceKlineStreamMessage = {
 const DEFAULT_BAR_SPACING = 7;
 const MIN_BAR_SPACING = 3;
 const MAX_BAR_SPACING = 22;
+/** Below this width, vertical drags pass through to the page (mobile document scroll). */
+const MOBILE_CHART_SCROLL_MQ = "(max-width: 1023px)";
 const INTERVALS = ["1m", "5m", "15m", "1h", "4h"] as const;
 type Interval = (typeof INTERVALS)[number];
 
@@ -116,6 +118,24 @@ function klineToCandle(
   };
 }
 
+function handleScrollForViewport() {
+  const narrow =
+    typeof window !== "undefined" && window.matchMedia(MOBILE_CHART_SCROLL_MQ).matches;
+  return narrow
+    ? {
+        mouseWheel: true,
+        pressedMouseMove: true,
+        horzTouchDrag: true,
+        vertTouchDrag: false,
+      }
+    : {
+        mouseWheel: true,
+        pressedMouseMove: true,
+        horzTouchDrag: true,
+        vertTouchDrag: true,
+      };
+}
+
 function klineToVolume(
   kline: BinanceRestKline | { t: number; o: string; c: string; v?: string },
 ): { time: Time; value: number; color: string } {
@@ -167,10 +187,7 @@ export function TradingChart({ pair }: TradingChartProps) {
     const isDark = theme === "dark";
     const chart = createChart(containerRef.current, {
       autoSize: true,
-      handleScroll: {
-        mouseWheel: true,
-        pressedMouseMove: true,
-      },
+      handleScroll: handleScrollForViewport(),
       handleScale: {
         mouseWheel: true,
         pinch: true,
@@ -216,7 +233,12 @@ export function TradingChart({ pair }: TradingChartProps) {
       attributeFilter: ["data-theme"],
     });
 
+    const mql = window.matchMedia(MOBILE_CHART_SCROLL_MQ);
+    const syncHandleScroll = () => chart.applyOptions({ handleScroll: handleScrollForViewport() });
+    mql.addEventListener("change", syncHandleScroll);
+
     return () => {
+      mql.removeEventListener("change", syncHandleScroll);
       observer.disconnect();
       chart.remove();
     };

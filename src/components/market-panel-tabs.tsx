@@ -155,7 +155,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
   }, [asks, bids]);
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-border bg-panel-elevated p-2 sm:p-2.5">
+    <div className="flex h-full min-h-0 w-full max-w-full flex-col overflow-hidden rounded-lg border border-border bg-panel-elevated p-2 sm:p-2.5 max-lg:max-h-full lg:max-h-none">
       <div className="mb-2 flex items-center gap-2">
         <button
           type="button"
@@ -181,7 +181,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
         </button>
       </div>
 
-      <div className="relative isolate flex min-h-[200px] flex-1 flex-col overflow-hidden pt-0.5 sm:min-h-[160px] lg:min-h-0">
+      <div className="relative isolate flex min-h-0 flex-1 flex-col overflow-hidden pt-0.5">
         <AnimatePresence mode="wait">
           {activeTab === "orderbook" ? (
             <motion.div
@@ -200,7 +200,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
             </div>
 
             <div className="flex h-[calc(100%-27px)] min-h-0 flex-col px-1.5 py-1 text-[11px]">
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto [scrollbar-width:thin] lg:overscroll-y-contain max-lg:[-webkit-overflow-scrolling:touch]">
                 {[...asks].reverse().map((level) => (
                   <div key={`ask-${level.price}`} className="relative grid grid-cols-3 px-1 py-0.5 lg:py-px">
                   <div
@@ -221,7 +221,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
                 {asks[0] && bids[0] ? formatPrice(asks[0].price - bids[0].price, pair) : "--"}
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto [scrollbar-width:thin] lg:overscroll-y-contain max-lg:[-webkit-overflow-scrolling:touch]">
                 {bids.map((level) => (
                   <div key={`bid-${level.price}`} className="relative grid grid-cols-3 px-1 py-0.5 lg:py-px">
                   <div
@@ -254,7 +254,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
               <span className="text-right">Qty</span>
               <span className="text-right">Time</span>
             </div>
-            <div className="h-[calc(100%-31px)] overflow-y-auto px-1.5 py-1">
+            <div className="h-[calc(100%-31px)] overflow-y-auto overscroll-y-auto px-1.5 py-1 lg:overscroll-y-contain max-lg:[-webkit-overflow-scrolling:touch]">
               {trades.map((trade) => (
                 <div key={trade.id} className="grid grid-cols-3 px-1 py-0.5 text-[11px]">
                   <span className={trade.isSell ? "text-sell" : "text-buy"}>

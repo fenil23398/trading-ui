@@ -213,7 +213,7 @@ export function OrderEntryPanel({ pair }: OrderEntryPanelProps) {
         </span>
       </div>
 
-      <div className="grid max-h-[min(72vh,640px)] min-h-0 grid-cols-1 gap-3 overflow-y-auto overscroll-contain pr-1 lg:max-h-full lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div className="grid max-h-[min(72vh,640px)] min-h-0 grid-cols-1 gap-3 overflow-y-auto overscroll-y-auto pr-1 [scrollbar-width:thin] max-lg:[-webkit-overflow-scrolling:touch] lg:max-h-full lg:min-h-0 lg:flex-1 lg:overscroll-y-contain lg:overflow-y-auto">
         <div className="rounded-lg border border-border bg-panel-elevated p-3">
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -491,9 +491,9 @@ function OrderPrimaryCta({
       ) : needsAddFunds ? (
         `ADD FUNDS (+${PAPER_FUND_TOP_UP_USDT} USDT)`
       ) : side === "buy" ? (
-        "Place Buy Order"
+        "Buy/Long"
       ) : (
-        "Place Sell Order"
+        "Sell/Short"
       )}
     </button>
   );

@@ -15,7 +15,9 @@ export function TradingChartSlot({ pair }: TradingChartSlotProps) {
 
   const innerGridClassName = [
     "grid w-full grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,0.8fr)]",
-    isConnected ? "h-[436px] shrink-0" : "h-full min-h-0 shrink-0",
+    isConnected
+      ? "max-lg:grid-rows-[320px_320px] max-lg:h-[648px] shrink-0 lg:grid-rows-1 lg:h-[436px]"
+      : "h-full min-h-0 shrink-0 max-lg:grid-rows-[minmax(320px,1fr)_minmax(320px,1fr)] lg:grid-rows-1",
   ].join(" ");
 
   const sectionClassName = [
