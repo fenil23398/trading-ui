@@ -9,20 +9,25 @@ type TradingChartSlotProps = {
   pair: SupportedPair;
 };
 
-/** Connected: chart + order book row fixed at 436px tall. Disconnected: fills left column (`h-full`). */
+/**
+ * Connected lg+: chart + order book ~56% of left column (flex-5), min 436px tall; open positions flex-4 with min height in parent.
+ * Disconnected: fills left column (`h-full`). Mobile connected: fixed two-row stack height.
+ */
 export function TradingChartSlot({ pair }: TradingChartSlotProps) {
   const { isConnected } = useAccount();
 
   const innerGridClassName = [
-    "grid w-full grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,0.8fr)]",
+    "grid w-full min-h-0 grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,0.8fr)]",
     isConnected
-      ? "max-lg:grid-rows-[320px_320px] max-lg:h-[648px] shrink-0 lg:grid-rows-1 lg:h-[436px]"
+      ? "max-lg:grid-rows-[320px_320px] max-lg:h-[648px] shrink-0 lg:h-full lg:min-h-0 lg:flex-1 lg:grid-rows-1"
       : "h-full min-h-0 shrink-0 max-lg:grid-rows-[minmax(320px,1fr)_minmax(320px,1fr)] lg:grid-rows-1",
   ].join(" ");
 
   const sectionClassName = [
     "trading-chart-slot relative flex w-full min-w-0 flex-col overflow-hidden px-0 py-0 lg:min-h-0 lg:overflow-hidden lg:px-1 lg:py-1",
-    isConnected ? "shrink-0" : "min-h-0 flex-1 lg:min-h-0 lg:flex-1",
+    isConnected
+      ? "shrink-0 lg:min-h-[436px] lg:min-w-0 lg:flex-[5]"
+      : "min-h-0 flex-1 lg:min-h-0 lg:flex-1",
   ].join(" ");
 
   return (

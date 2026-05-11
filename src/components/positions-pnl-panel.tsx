@@ -192,8 +192,8 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
     <aside
       className={`flex w-full flex-col rounded-xl border border-border bg-panel-elevated ${
         isEmpty
-          ? "min-h-0 shrink-0 overflow-hidden p-3 sm:p-4"
-          : "max-h-[min(56vh,620px)] shrink-0 overflow-hidden p-3 sm:p-4 lg:max-h-none lg:overflow-x-hidden lg:overflow-y-visible lg:p-3"
+          ? "min-h-0 shrink-0 overflow-hidden p-3 sm:p-4 lg:h-full lg:min-h-0 lg:flex-1 lg:flex-col"
+          : "max-h-[min(56vh,620px)] shrink-0 overflow-hidden p-3 sm:p-4 lg:max-h-none lg:flex lg:h-full lg:min-h-0 lg:w-full lg:flex-1 lg:basis-0 lg:flex-col lg:overflow-hidden lg:p-3"
       }`}
     >
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2 sm:mb-4">
@@ -217,7 +217,7 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
 
       <div
         className={`flex flex-col overflow-hidden rounded-lg border border-border bg-panel/50 ${
-          isEmpty ? "shrink-0" : "min-h-0 flex-1 lg:flex-none lg:shrink-0 lg:overflow-visible"
+          isEmpty ? "shrink-0 lg:min-h-0 lg:flex-1" : "min-h-0 flex-1 basis-0 lg:min-h-0 lg:flex-1 lg:overflow-hidden"
         }`}
       >
         <div className={`flex flex-col overflow-hidden lg:hidden ${isEmpty ? "shrink-0" : "min-h-0 flex-1"}`}>
@@ -331,9 +331,11 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
           )}
         </div>
 
-        <div className="hidden shrink-0 flex-col overflow-visible lg:flex">
+        <div
+          className={`hidden w-full min-w-0 flex-col overflow-hidden lg:flex ${isEmpty ? "min-h-0 shrink-0" : "min-h-0 flex-1 basis-0"}`}
+        >
           {isEmpty ? (
-            <div className="flex flex-col items-center justify-center gap-2 px-3 py-8 text-center">
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-3 py-8 text-center">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-panel-elevated ring-1 ring-border/60">
                 <Layers className="h-4 w-4 text-text-secondary" aria-hidden />
               </div>
@@ -343,21 +345,22 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
               </p>
             </div>
           ) : (
-            <div className="flex min-w-[640px] shrink-0 flex-col overflow-x-auto overflow-y-visible">
-              <div className="flex min-w-[640px] shrink-0 flex-col">
-                <div className="grid shrink-0 grid-cols-[0.62fr_0.92fr_0.72fr_0.48fr_0.52fr_0.82fr_0.58fr_0.48fr] gap-x-0.5 border-b border-border bg-panel-elevated px-2 py-1.5 text-[9px] font-semibold uppercase tracking-wide text-text-secondary">
-                  <span>Pair</span>
-                  <span className="text-right">Entry/Liq</span>
-                  <span className="text-right">Mark</span>
-                  <span className="text-right">Qty</span>
-                  <span className="text-right">Collateral</span>
-                  <span className="text-right">TP/SL</span>
-                  <span className="text-right">PnL</span>
-                  <span className="text-right">Action</span>
-                </div>
+            <div className="flex min-h-0 min-w-0 flex-1 basis-0 flex-col overflow-hidden">
+              <div className="min-h-0 min-w-0 flex-1 basis-0 overflow-x-auto overflow-y-auto overscroll-y-contain [scrollbar-width:thin] lg:overscroll-y-contain">
+                <div className="flex min-w-[640px] flex-col">
+                  <div className="sticky top-0 z-10 grid shrink-0 grid-cols-[0.62fr_0.92fr_0.72fr_0.48fr_0.52fr_0.82fr_0.58fr_0.48fr] gap-x-0.5 border-b border-border bg-panel-elevated px-2 py-1.5 text-[9px] font-semibold uppercase tracking-wide text-text-secondary">
+                    <span>Pair</span>
+                    <span className="text-right">Entry/Liq</span>
+                    <span className="text-right">Mark</span>
+                    <span className="text-right">Qty</span>
+                    <span className="text-right">Collateral</span>
+                    <span className="text-right">TP/SL</span>
+                    <span className="text-right">PnL</span>
+                    <span className="text-right">Action</span>
+                  </div>
 
-                <div className="min-h-0 shrink-0 divide-y divide-border/50 [scrollbar-width:thin]">
-                  {rows.map((row, index) => (
+                  <div className="min-w-[640px] divide-y divide-border/50">
+                    {rows.map((row, index) => (
                     <div
                       key={row.id}
                       className={`grid grid-cols-[0.62fr_0.92fr_0.72fr_0.48fr_0.52fr_0.82fr_0.58fr_0.48fr] items-start gap-x-0.5 px-2 py-1.5 text-[11px] transition-colors hover:bg-panel-elevated/40 ${
@@ -417,6 +420,7 @@ export function PositionsPnLPanel({ pair }: PositionsPnLPanelProps) {
                       </span>
                     </div>
                   ))}
+                </div>
                 </div>
               </div>
             </div>
