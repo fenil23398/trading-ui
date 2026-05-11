@@ -5,7 +5,7 @@ type TradingLeftStackProps = {
 };
 
 /**
- * lg: fills grid row; chart + order book flex-5 (min 436px), positions flex-4 with min height; each scrolls inside.
+ * lg: fills grid row; chart + order book flex-7 (min 436px), positions flex-3 with min height; each scrolls inside.
  * Short viewports: whole column can scroll if min heights exceed the row.
  */
 export function TradingLeftStack({ children }: TradingLeftStackProps) {

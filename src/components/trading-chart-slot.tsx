@@ -10,7 +10,7 @@ type TradingChartSlotProps = {
 };
 
 /**
- * Connected lg+: chart + order book ~56% of left column (flex-5), min 436px tall; open positions flex-4 with min height in parent.
+ * Connected lg+: chart + order book ~70% of left column (flex-7), min 436px tall.
  * Disconnected: fills left column (`h-full`). Mobile connected: fixed two-row stack height.
  */
 export function TradingChartSlot({ pair }: TradingChartSlotProps) {
@@ -26,7 +26,7 @@ export function TradingChartSlot({ pair }: TradingChartSlotProps) {
   const sectionClassName = [
     "trading-chart-slot relative flex w-full min-w-0 flex-col overflow-hidden px-0 py-0 lg:min-h-0 lg:overflow-hidden lg:px-1 lg:py-1",
     isConnected
-      ? "shrink-0 lg:min-h-[436px] lg:min-w-0 lg:flex-[5]"
+      ? "shrink-0 lg:min-h-[436px] lg:min-w-0 lg:flex-[7]"
       : "min-h-0 flex-1 lg:min-h-0 lg:flex-1",
   ].join(" ");
 
