@@ -24,7 +24,7 @@ export function TradingChartSlot({ pair }: TradingChartSlotProps) {
   ].join(" ");
 
   const sectionClassName = [
-    "trading-chart-slot relative flex w-full min-w-0 flex-col overflow-hidden px-0 py-0 lg:min-h-0 lg:overflow-hidden lg:px-1 lg:py-1",
+    "trading-chart-slot relative flex w-full min-w-0 flex-col overflow-hidden px-0 py-0 lg:min-h-0 lg:overflow-hidden",
     isConnected
       ? "shrink-0 lg:min-h-[436px] lg:min-w-0 lg:flex-[7]"
       : "min-h-0 flex-1 lg:min-h-0 lg:flex-1",
@@ -34,7 +34,7 @@ export function TradingChartSlot({ pair }: TradingChartSlotProps) {
     <section className={sectionClassName}>
       <div className={innerGridClassName}>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 rounded-lg border border-border bg-panel-elevated p-1.5 sm:p-2">
+          <div className="min-h-0 flex-1 rounded-lg border border-border bg-panel-elevated p-2">
             <TradingChart pair={pair} />
           </div>
         </div>

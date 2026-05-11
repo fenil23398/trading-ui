@@ -155,7 +155,7 @@ export function MarketPanelTabs({ pair }: MarketPanelTabsProps) {
   }, [asks, bids]);
 
   return (
-    <div className="flex h-full min-h-0 w-full max-w-full flex-col overflow-hidden rounded-lg border border-border bg-panel-elevated p-2 sm:p-2.5 max-lg:max-h-full lg:max-h-none">
+    <div className="flex h-full min-h-0 w-full max-w-full flex-col overflow-hidden rounded-lg border border-border bg-panel-elevated p-2 max-lg:max-h-full lg:max-h-none">
       <div className="mb-2 flex items-center gap-2">
         <button
           type="button"
